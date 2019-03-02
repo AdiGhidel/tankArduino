@@ -35,17 +35,17 @@ void hold(int ms) {
   delay(ms);
 }
 void right(int ms) {
-  digitalWrite(L1, LOW);
-  digitalWrite(L2, HIGH);
-  digitalWrite(R1, HIGH);
-  digitalWrite(R2, LOW);
-  delay(ms);
-}
-void left(int ms) {
   digitalWrite(L1, HIGH);
   digitalWrite(L2, LOW);
   digitalWrite(R1, LOW);
   digitalWrite(R2, HIGH);
+  delay(ms);
+}
+void left(int ms) {;
+  digitalWrite(L1, LOW);
+  digitalWrite(L2, HIGH);
+  digitalWrite(R1, HIGH);
+  digitalWrite(R2, LOW);
   delay(ms);
 }
 void back(int ms) {
@@ -149,7 +149,7 @@ void rotateRight180(int ms) {
 void avoidLeft(int ms) {
   rotateLeft90(ms);
   hold(50);
-  setSpeedBoth(230);
+  setSpeedBoth(180);
   if (isSafe(Front, 15)) {
     front(1000);
     rotateRight90(ms);
@@ -157,7 +157,7 @@ void avoidLeft(int ms) {
     rotateRight180(ms);
     if (isSafe(Front, 15)) {
       front(1000);
-      rotateRight90(25);
+      rotateRight90(ms);
     } else {
       rotateLeft90(ms);
       back(1000);
@@ -172,7 +172,7 @@ void avoidLeft(int ms) {
 void avoidRight(int ms) {
   rotateRight90(ms);
   hold(50);
-  setSpeedBoth(230);
+  setSpeedBoth(180);
   if (isSafe(Front, 15)) {
     front(1000);
     rotateLeft90(ms);
@@ -180,7 +180,7 @@ void avoidRight(int ms) {
     rotateRight180(ms);
     if (isSafe(Front, 15)) {
       front(1000);
-      rotateLeft90(25);
+      rotateLeft90(ms);
     } else {
       rotateRight90(ms);
       back(1000);

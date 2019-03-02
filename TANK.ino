@@ -12,7 +12,7 @@ void setup() {
 
   pinMode(SpeedA, OUTPUT);
   pinMode(SpeedB, OUTPUT);
-  setSpeedBoth(255);
+  setSpeedBoth(200);
   //set the distance sensor
   
   
@@ -20,11 +20,13 @@ void setup() {
   pinMode(Back, INPUT); // Sets the Back as an Input
   pinMode(Front, INPUT); // Sets the Front as an Input
   
-  Serial.begin(115200); // Starts the serial communication
+  Serial.begin(9600); // Starts the serial communication
+
   while (!Serial) {}
 
   //start the sensor
   status = IMU.begin();
+
   if (status < 0) {
     Serial.println("IMU initialization unsuccessful");
     Serial.println("Check IMU wiring or try cycling power");
@@ -36,14 +38,30 @@ void setup() {
 
 void loop() {
   digitalWrite(LED_BUILTIN, HIGH);
-  front(50);
-  if (!isSafe(Front,15)) {
-     if(rand()%2 == 1) {
-        avoidLeft(25);    
-     } else {
-        avoidRight(25);
-     }
-     
-  }
-  digitalWrite(LED_BUILTIN, LOW);
+  Serial.readString();
+////  if (Serial.available()) {
+//      if(Serial.read() != -1) {
+//        Serial.println(Serial.read());
+//        digitalWrite(LED_BUILTIN, LOW);
+//      } else {
+//        digitalWrite(LED_BUILTIN, LOW);
+//      }
+      
+//  } else {
+//    Serial.println("serial n/a avaliable");
+//    digitalWrite(LED_BUILTIN, LOW);
+//    delay(2500);
+//    digitalWrite(LED_BUILTIN, LOW);
+//    delay(2500);
+//  }
+
+//  if (!isSafe(Front,15)) {
+////     if(rand()%2 == 1) {
+//        rotateLeft90(10);    
+////     } else {
+////        rotateRight90(10);
+////     }
+//     
+//  }
+
 }
