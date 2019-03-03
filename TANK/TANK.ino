@@ -2,12 +2,9 @@
 #include "utils.h"
 #include <SoftwareSerial.h>
 int status;
-SoftwareSerial blueTooth(8, 7);
-#include <IRremote.h>
 
-const int RECV_PIN = 0;
-IRrecv irrecv(RECV_PIN);
-decode_results results;
+SoftwareSerial blueTooth(0, 1);
+#include <IRremote.h>
 
 void setup() {
   // put your setup code here, to run once:
@@ -42,32 +39,24 @@ void setup() {
     Serial.println(status);
     while (1) {}
   }
-  irrecv.enableIRIn();
-  irrecv.blink13(true);
+
 }
 
 void loop() {
     digitalWrite(LED_BUILTIN, HIGH);
-    if (irrecv.decode(&results)){
-        long long x = results.value;
-        irrecv.resume();
-        if (x == 0xF7609F) {
-          front(50);
-        } else if (x == 0xF7906F) {
-          rotateLeft90(50); 
-        } else if (x == 0xF7D02F) {
-          rotateRight90(50);
-        } else if (x == 0xF750AF) {
-          hold(50);
-        } else if (x == 0xF7708F)  {
-          back(50);
-        }
-
-        
-        
-  }
- 
-
+    blueTooth.write("1");
+    delay(500);
+    if (Serial.available()){
+      digitalWrite(LED_BUILTIN, LOW);
+      char c = Serial.read();
+      Serial.write(c);
+      blueTooth.write(c);
+      char x = blueTooth.read();
+      Serial.write(x);
+      delay(1000);
+      digitalWrite(LED_BUILTIN, HIGH);
+    }
+    
 //  if (!isSafe(Front,15)) {
 ////     if(rand()%2 == 1) {
 //        rotateLeft90(10);    
