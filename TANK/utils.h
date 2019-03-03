@@ -7,7 +7,7 @@
 #define L2 A0
 #define R1 A2
 #define R2 A3
-
+#define DELAY 10
 #define SpeedA 9
 #define SpeedB 10
 #define trigPin 3
@@ -188,4 +188,55 @@ void avoidRight(int ms) {
     }
   }
   setSpeedBoth(255);
+}
+
+float mapSpeed(float factor) {
+    Serial.println(160.0 + factor * 95.0);
+    return 160.0 + factor * 95.0;
+}
+int getState(String x) {
+     
+    if (x == "forward") {
+      return 1;
+    } else if (x == "back") {
+      return 2;
+    } else if (x == "right90") {
+      return 3;
+    } else if (x == "left90") {
+      return 4;
+    } else if (x == "stop") {
+      return 5;
+    } else if (x == "spin") {
+      return 6;
+    } else {
+      int lastIdx =x.lastIndexOf('.');
+      String factorS = '0' + x.substring(lastIdx);
+      float factor = factorS.toFloat();
+      Serial.println("new speed is " + (int)mapSpeed(factor));
+      setSpeedBoth(mapSpeed(factor));
+    }
+    return -1;
+}
+
+void decodeState(int &state) {
+  if (state == 1) {
+    front(DELAY);
+  }
+  if (state == 2) {
+    back(DELAY);
+  }
+  if (state == 3) {
+    rotateRight90(DELAY);
+    state = 5;
+  }
+  if (state == 4) {
+    rotateRight90(DELAY);
+    state = 5;
+  }
+  if (state == 5) {
+    hold(10);
+  }
+  if (state == 6) {
+    rotateRight90(DELAY);
+  }
 }

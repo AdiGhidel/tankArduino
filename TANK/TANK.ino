@@ -41,29 +41,19 @@ void setup() {
   }
 
 }
-
+int state = 0;
 void loop() {
+    blueTooth.flush();  
     digitalWrite(LED_BUILTIN, HIGH);
-    blueTooth.write("1");
-    delay(500);
-    if (Serial.available()){
-      digitalWrite(LED_BUILTIN, LOW);
-      char c = Serial.read();
-      Serial.write(c);
-      blueTooth.write(c);
-      char x = blueTooth.read();
-      Serial.write(x);
-      delay(1000);
+    if (blueTooth.available()){
+      String x = blueTooth.readString();
+      Serial.println(x);
       digitalWrite(LED_BUILTIN, HIGH);
+      int newstate = getState(x);
+      if(newstate != -1) {
+        state = newstate;
+      }
+      Serial.println(state);
     }
-    
-//  if (!isSafe(Front,15)) {
-////     if(rand()%2 == 1) {
-//        rotateLeft90(10);    
-////     } else {
-////        rotateRight90(10);
-////     }
-//     
-//  }
-
+    decodeState(state);
 }
