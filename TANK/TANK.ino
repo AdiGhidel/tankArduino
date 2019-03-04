@@ -4,7 +4,6 @@
 int status;
 
 SoftwareSerial blueTooth(0, 1);
-#include <IRremote.h>
 
 void setup() {
   // put your setup code here, to run once:
@@ -25,7 +24,7 @@ void setup() {
   pinMode(Front, INPUT); // Sets the Front as an Input
   
   Serial.begin(9600); // Starts the serial communication
-  blueTooth.begin(9600);
+  blueTooth.begin(115200);
 
   while (!Serial) {}
 
@@ -39,10 +38,11 @@ void setup() {
     Serial.println(status);
     while (1) {}
   }
-
+  blueTooth.setTimeout(100);
 }
 int state = 0;
 void loop() {
+  
     blueTooth.flush();  
     digitalWrite(LED_BUILTIN, HIGH);
     if (blueTooth.available()){
