@@ -15,7 +15,7 @@ void setup() {
 
   pinMode(SpeedA, OUTPUT);
   pinMode(SpeedB, OUTPUT);
-  setSpeedBoth(200);
+  setSpeedBoth(cSpeed);
   //set the distance sensor
   
   
