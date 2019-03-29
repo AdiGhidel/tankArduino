@@ -40,7 +40,7 @@ void setup() {
   }
   blueTooth.setTimeout(100);
 }
-int state = 0;
+
 void loop() {
   
     blueTooth.flush();  

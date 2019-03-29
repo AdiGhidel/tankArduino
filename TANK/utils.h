@@ -14,10 +14,11 @@
 #define Back 5
 #define Front 6
 
+
 int cSpeed = 200;
 MPU9250 IMU(Wire, 0x68);
 
-
+int state = 0;
 
 //Motors states;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -42,7 +43,8 @@ void right(int ms) {
   digitalWrite(R2, HIGH);
   delay(ms);
 }
-void left(int ms) {;
+void left(int ms) {
+  ;
   digitalWrite(L1, LOW);
   digitalWrite(L2, HIGH);
   digitalWrite(R1, HIGH);
@@ -89,10 +91,10 @@ bool isSafe(int direct, int minim) {
 //Setspeeds
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 void setSpeedLeft(int sp) {
-  analogWrite(SpeedA, sp);
+  analogWrite(SpeedB, sp);
 }
 void setSpeedRight(int sp) {
-  analogWrite(SpeedB, sp);
+  analogWrite(SpeedA, sp);
 }
 void setSpeedBoth(int sp) {
   analogWrite(SpeedA, sp);
@@ -101,11 +103,11 @@ void setSpeedBoth(int sp) {
 
 //Rotate 90 left
 void rotateLeft90(int ms) {
-  setSpeedBoth(max(165,min(cSpeed, 215)));
+  setSpeedBoth(max(165, min(cSpeed, 210)));
   float totRads = 0;
   float ratio = ms / 1000.0;
 
-  while (totRads > -1.33) {
+  while (totRads > -1.29) {
     IMU.readSensor();
     left(ms);
     totRads += ratio * IMU.getGyroZ_rads();
@@ -114,11 +116,11 @@ void rotateLeft90(int ms) {
 }
 //Rotate 90 right
 void rotateRight90(int ms) {
-  setSpeedBoth(max(165,min(cSpeed, 215)));
+  setSpeedBoth(max(165, min(cSpeed, 210)));
   float totRads = 0;
-  float ratio = ms / 1000.0;
+  float ratio = ms/ 1000.0;
 
-  while (totRads < 1.29) {
+  while (totRads < 1.24) {
     IMU.readSensor();
     right(ms);
     totRads += ratio * IMU.getGyroZ_rads();
@@ -147,7 +149,20 @@ void rotateRight180(int ms) {
     totRads += ratio * IMU.getGyroZ_rads();
   }
 }
-
+//Turn slightly right
+void curveRight(int ms) {
+  setSpeedRight(0);
+  setSpeedLeft(min(255,cSpeed + 60));
+  delay(250);
+  setSpeedBoth(cSpeed);
+}
+//Turn slightly left
+void curveLeft(int ms) {
+  setSpeedRight(min(255,cSpeed + 60));
+  setSpeedLeft(0);
+  delay(250);
+  setSpeedBoth(cSpeed);
+}
 
 //Avoid object on left
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
@@ -196,32 +211,37 @@ void avoidRight(int ms) {
 }
 
 float mapSpeed(float factor) {
-    Serial.println(130.0 + factor * 125.0);
-    return 130.0 + factor * 125.0;
+  Serial.println(130.0 + factor * 125.0);
+  return 130.0 + factor * 125.0;
 }
 int getState(String x) {
-     
-    if (x == "forward") {
-      return 1;
-    } else if (x == "back") {
-      return 2;
-    } else if (x == "right90") {
-      return 3;
-    } else if (x == "left90") {
-      return 4;
-    } else if (x == "stop") {
-      return 5;
-    } else if (x == "spin") {
-      return 6;
-    } else {
-      int lastIdx =x.lastIndexOf('.');
-      String factorS = '0' + x.substring(lastIdx);
-      float factor = factorS.toFloat();
-      Serial.println("new speed is " + (int)mapSpeed(factor));
-      cSpeed = mapSpeed(factor);
-      setSpeedBoth(cSpeed);
-    }
-    return -1;
+
+  if (x == "forward") {
+    return 1;
+  } else if (x == "back") {
+    return 2;
+  } else if (x == "right90") {
+    return 3;
+  } else if (x == "left90") {
+    return 4;
+  } else if (x == "stop") {
+    return 5;
+  } else if (x == "spin") {
+    return 6;
+  } else if (x == "right") {
+    return 7;
+  } else if (x == "left") {
+    return 8;
+  }
+  else {
+    int lastIdx = x.lastIndexOf('.');
+    String factorS = '0' + x.substring(lastIdx);
+    float factor = factorS.toFloat();
+    Serial.println("new speed is " + (int)mapSpeed(factor));
+    cSpeed = mapSpeed(factor);
+    setSpeedBoth(cSpeed);
+  }
+  return -1;
 }
 
 void decodeState(int &state) {
@@ -244,5 +264,11 @@ void decodeState(int &state) {
   }
   if (state == 6) {
     rotateRight90(DELAY);
+  }
+  if (state == 7) {
+    curveRight(DELAY);
+  }
+  if (state == 8) {
+    curveLeft(DELAY);
   }
 }
