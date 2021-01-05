@@ -15,6 +15,15 @@
 #define Front 6
 
 
+#define PS2_DAT        12  //14    
+#define PS2_CMD        11  //15
+#define PS2_SEL        8  //16
+#define PS2_CLK        7  //17
+#define pressures   true
+#define rumble      true
+
+int error = 0;
+byte type = 0;
 int cSpeed = 200;
 MPU9250 IMU(Wire, 0x68);
 
